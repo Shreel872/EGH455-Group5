@@ -1,0 +1,1 @@
+print("USB:", pipeline.getDefaultDevice().getUsbSpeed())
