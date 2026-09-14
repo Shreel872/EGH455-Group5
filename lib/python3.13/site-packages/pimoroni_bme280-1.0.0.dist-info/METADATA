@@ -1,0 +1,105 @@
+Metadata-Version: 2.1
+Name: pimoroni-bme280
+Version: 1.0.0
+Summary: Python library for the bme280 temperature, pressure and humidity sensor
+Project-URL: GitHub, https://www.github.com/pimoroni/bme280-python
+Project-URL: Homepage, https://www.pimoroni.com
+Author-email: Philip Howard <phil@pimoroni.com>
+Maintainer-email: Philip Howard <phil@pimoroni.com>
+License: MIT License
+        
+        Copyright (c) 2018 Pimoroni Ltd.
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+License-File: LICENSE
+Keywords: Pi,Raspberry
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Topic :: Software Development
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: System :: Hardware
+Requires-Python: >=3.7
+Requires-Dist: i2cdevice>=1.0.0
+Description-Content-Type: text/markdown
+
+# BME280 Temperature, Pressure, & Humidity Sensor
+
+[![Build Status](https://img.shields.io/github/actions/workflow/status/pimoroni/bme280-python/test.yml?branch=main)](https://github.com/pimoroni/bme280-python/actions/workflows/test.yml)
+[![Coverage Status](https://coveralls.io/repos/github/pimoroni/bme280-python/badge.svg?branch=master)](https://coveralls.io/github/pimoroni/bme280-python?branch=master)
+[![PyPi Package](https://img.shields.io/pypi/v/pimoroni-bme280.svg)](https://pypi.python.org/pypi/pimoroni-bme280)
+[![Python Versions](https://img.shields.io/pypi/pyversions/pimoroni-bme280.svg)](https://pypi.python.org/pypi/pimoroni-bme280)
+
+Suitable for measuring ambient temperature, barometric pressure, and humidity, the BME280 is a great indoor environmental sensor.
+
+# Pre-requisites
+
+You must enable:
+
+* i2c: `sudo raspi-config nonint do_i2c 0`
+
+You can optionally run `sudo raspi-config` or the graphical Raspberry Pi Configuration UI to enable interfaces.
+
+# Installing
+
+Stable library from PyPi, the smbus library is also needed:
+
+* Just run `python3 -m pip install pimoroni-bme280`
+
+Latest/development library from GitHub:
+
+* `git clone https://github.com/pimoroni/bme280-python`
+* `cd bme280-python`
+* `sudo ./install.sh`
+
+
+1.0.0
+-----
+
+* Repackage to hatch/pyproject.toml
+* Require i2cdevice>=1.0.0 (smbus2)
+
+0.1.1
+-----
+
+* Fix so package is included in .whl releases
+
+0.1.0
+-----
+
+* Switch to setup.cfg
+* Match humidity compensation to BOSCH formula
+
+0.0.2
+-----
+
+* Update to i2cdevice>=0.0.6 set/get API
+
+0.0.1
+-----
+
+* Initial Release

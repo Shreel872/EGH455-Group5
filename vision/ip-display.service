@@ -1,0 +1,18 @@
+[Unit]
+Description=Show hostname and IP on the Enviro+ LCD
+After=network-online.target
+Wants=network-online.target
+Conflicts=ip-display.service
+
+[Service]
+Type=simple
+User=team5
+Group=team5
+SupplementaryGroups=spi gpio
+WorkingDirectory=/home/team5/Team5/vision
+ExecStart=/home/team5/Team5/bin/python /home/team5/Team5/vision/ip_display.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

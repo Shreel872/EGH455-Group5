@@ -5,7 +5,12 @@ import logging
 import st7735
 from fonts.ttf import RobotoMedium as UserFont
 from PIL import Image, ImageDraw, ImageFont
+#TODO NEED THESE FOR IP GETTER
+import subprocess
+import atexit
 
+#TODO TODO TODO THIS FREES THE LCD FROM THE IP DISPLAY SERVICE, NEED TO RESTART IT ON EXIT
+subprocess.run(["sudo", "systemctl", "stop", "ip-display"], check=False)
 logging.basicConfig(
     format="%(asctime)s.%(msecs)03d %(levelname)-8s %(message)s",
     level=logging.INFO,
@@ -44,7 +49,7 @@ font = ImageFont.truetype(UserFont, font_size)
 text_colour = (255, 255, 255)
 back_colour = (0, 170, 170)
 
-message = "Hello, World!"
+message = "HELLO"
 
 x1, y1, x2, y2 = font.getbbox(message)
 size_x = x2 - x1
@@ -67,3 +72,6 @@ try:
 # Turn off backlight on control-c
 except KeyboardInterrupt:
     disp.set_backlight(0)
+    #TODO TODO TODO THIS RESTARTS THE IP DISPLAY SERVICE ON EXIT NOT REALLY REQUIRED
+    subprocess.run(["sudo", "systemctl", "start", "ip-display"], check=False)
+
