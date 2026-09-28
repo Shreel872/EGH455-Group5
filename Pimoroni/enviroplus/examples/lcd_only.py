@@ -4,14 +4,11 @@ import colorsys
 import os
 import sys
 import time
-import signal
-import socket
+import subprocess
 
 import st7735
-from fonts.ttf import RobotoMedium as UserFont
-from PIL import Image, ImageDraw, ImageFont
 
-POLL_SECONDS = 5
+subprocess.run(["sudo", "systemctl", "stop", "ip-display"], check=False)
 
 try:
     # Transitional fix for breaking change in LTR559
@@ -67,7 +64,6 @@ message = ""
 
 # The position of the top bar
 top_pos = 25
-
 
 
 # Displays data and text on the 0.96" LCD
@@ -132,35 +128,7 @@ for v in variables:
 # The main loop
 try:
     while True:
-        # these variable should always be recorded
         proximity = ltr559.get_proximity()
-        
-        latest_light = ltr559.get_lux() # in Lux
-        latest_pressure = bme280.get_pressure() # in hPa
-        latest_humidity = bme280.get_pressure() # in %
-        gas_data = gas.read_all() # the gas readings do not give an exact concentration. 
-        # these readings are given in ohms, which provides an overview of their concentration
-        # as concentration increases, the resistance value will drop
-        # you need to run for 10 minutes to set a baseline, and from there you can properly 
-        # consider air quality changes. see https://learn.pimoroni.com/article/getting-started-with-enviro-plus
-        latest_oxidised = gas_data.oxidising / 1000 # in Ohms
-        latest_reduced = gas_data.reducing / 1000 # in Ohms
-        latest_nh3 = gas_data.nh3 / 1000 # in Ohms
-
-        # the compensated temperature 
-        cpu_temp = get_cpu_temperature()
-        # Smooth out with some averaging to decrease jitter
-        cpu_temps = cpu_temps[1:] + [cpu_temp]
-        avg_cpu_temp = sum(cpu_temps) / float(len(cpu_temps))
-        raw_temp = bme280.get_temperature()
-        latest_temperature = raw_temp - ((avg_cpu_temp - raw_temp) / factor) # in °C
-
-        # data needs to be sent to the web server; to do to the values need to be logged
-        logging.info(f"""Light: {latest_light:05.02f} Temp: {latest_temperature:05.02f} 
-        Pressure: {latest_pressure:05.02f} Humidity: {latest_humidity:05.02f} 
-        Oxidised: {latest_oxidised:05.02f} Reduced: {latest_reduced:05.02f} 
-        NH3: {latest_nh3:05.02f} """)
-        time.sleep(1.0)
 
         # If the proximity crosses the threshold, toggle the mode
         if proximity > 1500 and time.time() - last_page > delay:
@@ -168,24 +136,8 @@ try:
             mode %= len(variables)
             last_page = time.time()
 
-        # One mode for each display variable (IP, video, temperature)
+        # One mode for each variable
         if mode == 0:
-            # IP Address
-            ## placeholder
-            unit = "%"
-            data = bme280.get_humidity()
-            display_text(variables[mode], data, unit)
-
-
-        if mode == 1:
-            # video feed
-            ## placeholder
-            unit = "%"
-            data = bme280.get_pressure()
-            display_text(variables[mode], data, unit)
-
-
-        if mode == 2:
             # variable = "temperature"
             unit = "°C"
             cpu_temp = get_cpu_temperature()
@@ -196,6 +148,50 @@ try:
             data = raw_temp - ((avg_cpu_temp - raw_temp) / factor)
             display_text(variables[mode], data, unit)
 
+        if mode == 1:
+            # variable = "pressure"
+            unit = "hPa"
+            data = bme280.get_pressure()
+            display_text(variables[mode], data, unit)
+
+        if mode == 2:
+            # variable = "humidity"
+            unit = "%"
+            data = bme280.get_humidity()
+            display_text(variables[mode], data, unit)
+
+        if mode == 3:
+            # variable = "light"
+            unit = "Lux"
+            if proximity < 10:
+                data = ltr559.get_lux()
+            else:
+                data = 1
+            display_text(variables[mode], data, unit)
+
+        if mode == 4:
+            # variable = "oxidised"
+            unit = "kO"
+            data = gas.read_all()
+            data = data.oxidising / 1000
+            display_text(variables[mode], data, unit)
+
+        if mode == 5:
+            # variable = "reduced"
+            unit = "kO"
+            data = gas.read_all()
+            data = data.reducing / 1000
+            display_text(variables[mode], data, unit)
+
+        if mode == 6:
+            # variable = "nh3"
+            unit = "kO"
+            data = gas.read_all()
+            data = data.nh3 / 1000
+            display_text(variables[mode], data, unit)
+
 # Exit cleanly
 except KeyboardInterrupt:
     sys.exit(0)
+
+subprocess.run(["sudo", "systemctl", "start", "ip-display"], check=False)

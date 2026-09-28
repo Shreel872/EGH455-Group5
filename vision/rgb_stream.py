@@ -3,7 +3,7 @@ import depthai as dai
 with dai.Pipeline() as pipeline:
     cam = pipeline.create(dai.node.Camera).build(dai.CameraBoardSocket.CAM_A)
     nn = pipeline.create(dai.node.DetectionNetwork).build(
-        cam, dai.NNModelDescription("yolov6-nano"), fps=15.0)
+        cam, dai.NNModelDescription("yolo_Gauge.pt"), fps=15.0)
     nn.setConfidenceThreshold(0.5)
     nn.input.setBlocking(False)
  
