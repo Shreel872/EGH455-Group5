@@ -4,8 +4,11 @@ import colorsys
 import os
 import sys
 import time
+import subprocess
 
 import st7735
+
+subprocess.run(["sudo", "systemctl", "stop", "ip-display"], check=False)
 
 try:
     # Transitional fix for breaking change in LTR559
@@ -190,3 +193,5 @@ try:
 # Exit cleanly
 except KeyboardInterrupt:
     sys.exit(0)
+
+subprocess.run(["sudo", "systemctl", "start", "ip-display"], check=False)

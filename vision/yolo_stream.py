@@ -34,7 +34,8 @@ with dai.Pipeline() as pipeline:
     vis_out.link(enc.input)
     remote.addTopic("detections", nn.out, "img")
     remote.addTopic("images", enc.out, "img")
-
+    det_queue = nn.out.createOutputQueue(maxSize=4, blocking=False)
+    classes = nn.getClasses() or []
     pipeline.start()
     remote.registerPipeline(pipeline)
     print("USB:", pipeline.getDefaultDevice().getUsbSpeed())
