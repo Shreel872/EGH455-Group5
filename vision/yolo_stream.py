@@ -12,7 +12,8 @@ import json
 from pathlib import Path
 import tarfile
 import time
-
+import zoneinfo
+from datetime import datetime, timezone, timedelta, tzinfo, date
 import depthai as dai
 from depthai_nodes.node import ParsingNeuralNetwork
 
@@ -103,7 +104,7 @@ def main() -> None:
         )
         encoder = pipeline.create(dai.node.VideoEncoder)
         encoder.setDefaultProfilePreset(
-            args.fps, dai.VideoEncoderProperties.Profile.H264_MAIN
+            args.fps, dai.VideoEncoderProperties.Profile.MJPEG
         )
         encoder.setBitrateKbps(1500)
         video.link(encoder.input)
@@ -117,6 +118,8 @@ def main() -> None:
         print(f"classes: {list(classes)}")
         print(f"Input: {width}x{height}, {frame_type}, resize={args.resize}")
         print(f"Confidence threshold: {args.conf:.2f}")
+        print(f"Framerate of the video stream: {args.fps:.1f} FPS")
+        print(f"Video quality: {encoder.getQuality()}")
         print(f"Open http://<pi-ip>:{args.http_port}/ in a browser")
         print("Press Ctrl+C to stop.")
 
@@ -132,10 +135,28 @@ def main() -> None:
                     detection_frames += 1
                     for label in {d.label for d in packet.detections}:
                         class_frames[label] += 1
+                        print(f"class_frames: {class_frames}")
                     for detection in packet.detections:
                         peak_confidence[detection.label] = max(
                             peak_confidence[detection.label], detection.confidence
                         )
+                if class_frames[1] > 5 or class_frames[0] > 5: #This to ensure the detection is not a false positive
+                    print(f"Allocated detection Period reached, preparing to save data");
+                    timestamp = time.time()
+                    aest_time = datetime.fromtimestamp(timestamp, tz=zoneinfo.ZoneInfo("Australia/Brisbane"))
+                    numberOfFrames = ( class_frames[1] if class_frames[1] > 5 else class_frames[0] );
+                    if class_frames[1] == 0:
+                        detection_type = "Valve-open"
+                    else:
+                        detection_type = "Valve-closed"
+                    data_to_save = {
+                        "time": aest_time.strftime("%Y-%m-%d %H:%M:%S %Z"),
+                        "Amount of Frames": numberOfFrames,
+                        "Detected": detection_type,
+                    }
+                    with open("data.json", "w") as json_file:
+                        json.dump(data_to_save, json_file, indent=4)
+                        print(f"data saved to json: {data_to_save}")
                 if now - last_report >= 2.0:
                     inference_fps = detection_frames / (now - last_report)
                     results = [

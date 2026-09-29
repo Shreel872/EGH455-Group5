@@ -86,8 +86,9 @@ def main() -> None:
         )
         encoder = pipeline.create(dai.node.VideoEncoder)
         encoder.setDefaultProfilePreset(
-            args.fps, dai.VideoEncoderProperties.Profile.H264_MAIN
+            args.fps, dai.VideoEncoderProperties.Profile.MJPEG
         )
+        encoder.setQuality(80)  # 0–100
         encoder.setBitrateKbps(1500)
         video.link(encoder.input)
         remote.addTopic("images", encoder.out, "img")
@@ -99,6 +100,8 @@ def main() -> None:
         print(f"Model: {model_path}")
         print(f"classes: {list(classes)}")
         print(f"Confidence threshold: {args.conf:.2f}")
+        print(f"Video quality: {encoder.getQuality()}") 
+        print(f"Video bitrate: {encoder.getBitrateKbps()} kbps")                
         print("Open https://10.88.48.146:8443/ in Chrome")
         print("Press Ctrl+C to stop.")
 
