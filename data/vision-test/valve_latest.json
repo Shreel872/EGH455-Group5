@@ -1,14 +1,14 @@
 {
     "schema_version": 1,
     "source": "valve",
-    "frame_id": 5061,
-    "device_timestamp_s": 341.996104,
-    "received_at_unix_s": 1790722935.0774539,
+    "frame_id": 7327,
+    "device_timestamp_s": 493.304477,
+    "received_at_unix_s": 1790723086.6589844,
     "width": 640,
     "height": 640,
     "resize": "crop",
     "coordinate_space": "normalized_model_input",
     "detections": [],
     "status": "not_detected",
-    "encoded_at_unix_s": 1790722935.0805397
+    "encoded_at_unix_s": 1790723086.665837
 }

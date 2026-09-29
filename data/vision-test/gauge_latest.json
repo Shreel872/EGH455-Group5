@@ -1,14 +1,14 @@
 {
     "schema_version": 1,
     "source": "gauge",
-    "frame_id": 5056,
-    "device_timestamp_s": 341.662238,
-    "received_at_unix_s": 1790722934.7007923,
+    "frame_id": 7339,
+    "device_timestamp_s": 494.105757,
+    "received_at_unix_s": 1790723087.200908,
     "width": 640,
     "height": 640,
     "resize": "stretch",
     "coordinate_space": "normalized_model_input",
     "detections": [],
     "status": "not_detected",
-    "encoded_at_unix_s": 1790722934.7039714
+    "encoded_at_unix_s": 1790723087.2058723
 }
