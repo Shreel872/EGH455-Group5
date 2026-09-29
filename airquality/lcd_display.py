@@ -150,6 +150,7 @@ def render(ip):
 
 def shutdown(signum, frame):
     st7735.set_backlight(0)
+    subprocess.run(["sudo","-n","systemctl", "start", "ip-display"], check=False)
     sys.exit(0)
 
 font_big = ImageFont.truetype(UserFont, 18)
@@ -247,6 +248,5 @@ try:
 
 # Exit cleanly
 except KeyboardInterrupt:
+    subprocess.run(["sudo","-n","systemctl", "start", "ip-display"], check=False)
     sys.exit(0)
-
-subprocess.run(["sudo", "systemctl", "start", "ip-display"], check=False)
